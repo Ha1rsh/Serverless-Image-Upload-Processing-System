@@ -1,0 +1,25 @@
+{
+  "name": "serverless-image-upload-processing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+    "dependencies": {
+    "@aws-sdk/client-s3": "^3.620.0",
+    "@aws-sdk/s3-request-presigner": "^3.620.0",
+    "@aws-sdk/client-dynamodb": "^3.620.0",
+    "@aws-sdk/lib-dynamodb": "^3.620.0",
+    "jimp": "^0.22.12",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.39.0",
+    "serverless-offline": "^13.6.0",
+    "serverless-webpack": "^5.13.0",
+    "webpack": "^5.94.0"
+  },
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "offline": "serverless offline"
+  }
+}

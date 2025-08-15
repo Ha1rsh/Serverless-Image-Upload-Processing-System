@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Upload to S3 (Presigned)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h2>Upload an image</h2>
+    <input id="file" type="file" accept="image/*" />
+    <button id="go">Upload</button>
+
+    <pre id="out"></pre>
+
+    <script>
+      const API = "https://<your-api-id>.execute-api.<region>.amazonaws.com/upload-url";
+
+      async function getUploadUrl(contentType) {
+        const res = await fetch(API, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ contentType })
+        });
+        if (!res.ok) throw new Error("Failed to get URL");
+        return res.json();
+      }
+
+      async function putFile(url, file) {
+        const res = await fetch(url, { method: "PUT", headers: { "content-type": file.type }, body: file });
+        if (!res.ok) throw new Error("Failed to upload");
+      }
+
+      document.getElementById("go").onclick = async () => {
+        const f = document.getElementById("file").files[0];
+        if (!f) return alert("Select a file");
+        try {
+          const { uploadUrl, objectKey } = await getUploadUrl(f.type);
+          await putFile(uploadUrl, f);
+          document.getElementById("out").textContent =
+            `Uploaded!\nOriginals S3 Key: ${objectKey}\nVariants will appear under s3://${"${"}PROCESSED_BUCKET${"}"}/<width>/${objectKey}`;
+        } catch (e) {
+          document.getElementById("out").textContent = e.message;
+        }
+      };
+    </script>
+  </body>
+</html>
